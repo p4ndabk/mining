@@ -7,7 +7,7 @@ import (
 )
 
 // Constante de dificuldade (quantidade de zeros exigidos no início do hash)
-const Difficulty = 7
+const Difficulty = 1
 
 // Quantidade de blocos a serem minerados (incluindo o bloco gênesis)
 const QtdBlock = 10
@@ -28,17 +28,10 @@ func main() {
 	var totalTime time.Duration
 	totalBlocks := QtdBlock
 
-	// Lista de transações
-	transactions := []string{
-		"a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
-		"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
-		"4e07408562bedb8b60ce05c1decfe3ad16b72230995d5c92bc6572eb0aaea",
-		"ef2d127de37b942a960a96987f6e9caa2e667cbbfbdd8e819e7b342ecffbcbd",
-		"e1671797c52e15f763380b45e841ec32c0edg8aabbdc0f495d8f1e9e5aebec",
-	}
-
 	// Criar o bloco gênesis (primeiro bloco da cadeia)
-	genesisBlock := mining.NewBlock(transactions, "0", 0)
+	genesisTransactions := mining.GenerateRandomTransactions(0)
+	genesisBlock := mining.NewBlock(genesisTransactions, "0", 0)
+
 	fmt.Println("=== Minerando Bloco Gênesis ===")
 	fmt.Printf("PrevHash: %s\n", genesisBlock.PrevHash)
 	fmt.Printf("Transações: %v\n", genesisBlock.Transactions)
@@ -69,12 +62,8 @@ func main() {
 	prevHash := genesisBlock.Hash
 	for i := 1; i <= QtdBlock-1; i++ {
 		// Criar um novo bloco com transações fictícias
-		newTransactions := []string{
-            mining.GenerateTransactionHash(fmt.Sprintf("Transação %d-1", i)),
-            mining.GenerateTransactionHash(fmt.Sprintf("Transação %d-2", i)),
-			mining.GenerateTransactionHash(fmt.Sprintf("Transação %d-3", i)),
-            mining.GenerateTransactionHash(fmt.Sprintf("Transação %d-4", i)),
-        }
+		newTransactions := mining.GenerateRandomTransactions(i)
+
 		newBlock := mining.NewBlock(newTransactions, prevHash, i)
 		fmt.Printf("\n=== Minerando Bloco %d ===\n", i)
 		fmt.Printf("PrevHash: %s\n", newBlock.PrevHash)
